@@ -6,10 +6,12 @@ var GameSchedule = mongoose.model('GameSchedule');
 exports.processRequest = function(req, res) {
 console.log(req.body);
 if (req.body.result.action == "schedule") {
+    console.log("Post Request Sent For GameSchedule");
     getTeamSchedule(req,res)
   }
   else if (req.body.result.action == "tell.about")
   {
+      console.log("Post Request Sent For TeamInfo");
       getTeamInfo(req,res)
   }
 };
@@ -24,6 +26,7 @@ TeamInfo.findOne({team:teamToSearch},function(err,teamExists)
         console.log(teamExists);
         if (err)
         {
+          console.log("Error Occured While Processing Req For TeamInfo" + err);
           return res.json({
               speech: 'Something went wrong!',
               displayText: 'Something went wrong!',
@@ -60,10 +63,9 @@ let parameters = req.body.result.parameters;
         //previous game
         GameSchedule.find({opponent:team},function(err,games)
         {
-          console.log("12");
-          console.log(games);
           if (err)
           {
+            console.log("Error Occured While Processing Req For TeamInfo" + err);
             return res.json({
                 speech: 'Something went wrong!',
                 displayText: 'Something went wrong!',
