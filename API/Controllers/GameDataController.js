@@ -17,8 +17,11 @@ if (req.body.result.action == "schedule") {
 function getTeamInfo(req,res)
 {
 let teamToSearch = req.body.result && req.body.result.parameters && req.body.result.parameters.team ? req.body.result.parameters.team : 'Unknown';
-TeamInfo.findOne({name:teamToSearch},function(err,teamExists)
+teamToSearch = 'boston';
+TeamInfo.findOne({team:teamToSearch},function(err,teamExists)
       {
+        console.log("step6");
+        console.log(teamExists);
         if (err)
         {
           return res.json({
@@ -27,7 +30,7 @@ TeamInfo.findOne({name:teamToSearch},function(err,teamExists)
               source: 'team info'
           });
         }
-if (teamExists)
+      if (teamExists)
         {
           return res.json({
                 speech: teamExists.description,
@@ -57,6 +60,8 @@ let parameters = req.body.result.parameters;
         //previous game
         GameSchedule.find({opponent:team},function(err,games)
         {
+          console.log("12");
+          console.log(games);
           if (err)
           {
             return res.json({
@@ -65,20 +70,23 @@ let parameters = req.body.result.parameters;
                 source: 'game schedule'
             });
           }
-          if (games)
+
+          if (games && games.length != 0)
           {
             var requiredGame;
+            
             for (var i=0; i < games.length; i++)
             {
                 var game = games[i];
-var convertedCurrentDate = new Date();
-                var convertedGameDate = new Date(game.date);
-if (convertedGameDate > convertedCurrentDate)
+        var convertedCurrentDate = new Date(game.date);
+        var convertedGameDate = new Date();
+        if (convertedGameDate > convertedCurrentDate)
                 {
+                  console.log("13");
                   if(games.length > 1)
                   {
-                    requiredGame = games[i-1];
-var winningStatement = "";
+                    requiredGame = games[i];
+                    var winningStatement = "";
                     if (requiredGame.isWinner)
                     {
                         winningStatement = "Kings won this match by "+requiredGame.score;
@@ -102,7 +110,14 @@ var winningStatement = "";
                   }
                 }
             }
-}
+    }else{
+      console.log("step5");
+      return res.json({
+                speech: 'Something went wrong!',
+                displayText: 'Something went wrong!',
+                source: 'game schedule'
+            });
+    }
 });
       }
       else {
