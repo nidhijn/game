@@ -8,12 +8,17 @@ mongoose     = require('mongoose'),
 TeamInfo     = require('./API/Models/TeamInfo'), //created model loading here
 GameSchedule = require('./API/Models/GameSchedule');
 // mongoose instance connection url connection
-console.log("hello");
 mongoose.Promise = global.Promise;
-mongoose.connect(config.dbUrl);
+console.log("Connecting DB ....... ")
+var lsf = mongoose.connect(config.dbUrl, function(err, db) {
+	 console.log("ERROR");
+	 console.log(err);
+	 console.log("FBI");
+});
+console.log(lsf);
+console.log("DB Connected")
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json());
-console.log("hello");
 var routes = require('./API/Routes/Routes'); //importing route
 routes(server); //register the route
 server.listen((process.env.PORT || 8000), function () {
